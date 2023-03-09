@@ -51,6 +51,7 @@ class Game extends React.Component {
 			],
 			stepNumber: 0,
 			xIsNext: true,
+			ascending: true,
 		};
 	}
 
@@ -79,6 +80,12 @@ class Game extends React.Component {
 		this.setState({
 			stepNumber: step,
 			xIsNext: step % 2 === 0,
+		});
+	}
+
+	toggleClick() {
+		this.setState({
+			ascending: !this.state.ascending,
 		});
 	}
 
@@ -118,6 +125,8 @@ class Game extends React.Component {
 			status = "Next player: " + (this.state.xIsNext ? "X" : "O");
 		}
 
+		let { ascending } = this.state;
+
 		return (
 			<div className="game">
 				<div className="game-board">
@@ -128,7 +137,12 @@ class Game extends React.Component {
 				</div>
 				<div className="game-info">
 					<div>{status}</div>
-					<ol>{moves}</ol>
+					{ascending ? <ol>{moves}</ol> : <ol reversed>{moves}</ol>}
+				</div>
+				<div>
+					<button onClick={() => this.toggleClick()}>toggle</button>
+					{/* wie "toggle" ändern?
+					    toggle geht nur für ziffern bisher, nicht für die liste selbst */}
 				</div>
 			</div>
 		);
