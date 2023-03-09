@@ -140,9 +140,10 @@ class Game extends React.Component {
 					{ascending ? <ol>{moves}</ol> : <ol reversed>{moves}</ol>}
 				</div>
 				<div>
-					<button onClick={() => this.toggleClick()}>toggle</button>
-					{/* wie "toggle" ändern?
-					    toggle geht nur für ziffern bisher, nicht für die liste selbst */}
+					<button onClick={() => this.toggleClick()}>
+						{ascending ? "sort descending" : "sort ascending"}
+					</button>
+					{/* toggle geht nur für ziffern bisher, nicht für die liste selbst */}
 				</div>
 			</div>
 		);
