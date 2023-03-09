@@ -12,6 +12,7 @@ function Square(props) {
 
 class Board extends React.Component {
 	renderSquare(i) {
+		// console.log(winningSquares);
 		return (
 			<Square
 				value={this.props.squares[i]}
@@ -21,20 +22,31 @@ class Board extends React.Component {
 	}
 
 	render() {
+		const winningSquares = calculateWinner(this.props.squares);
 		let rows = [...Array(3).keys()];
 		return (
-			<div>
-				<div>
-					{rows.map((row) => (
-						<div key={row} className="board-row">
-							{[0, 3, 6].map((x) => (
-								<span key={x}>
-									{this.renderSquare(row + x)}
-								</span>
-							))}
-						</div>
-					))}
-				</div>
+			// Wieso geht das styling nicht?
+			<div style={{ backgroundColor: "yellow", color: "red" }}>
+				{rows.map((row) => (
+					<div
+						key={row}
+						className="board-row"
+						style={{ backgroundColor: "yellow", color: "red" }}
+					>
+						{[0, 3, 6].map((x) => (
+							<span
+								key={x}
+								style={{
+									backgroundColor: "yellow",
+									color: "red",
+								}}
+							>
+								{/* winningSquares[0] === ??? ? "yellow" : "transparent", */}
+								{this.renderSquare(row + x)}
+							</span>
+						))}
+					</div>
+				))}
 			</div>
 		);
 	}
@@ -120,7 +132,9 @@ class Game extends React.Component {
 
 		let status;
 		if (winner) {
-			status = "Winner: " + winner;
+			status = "Winner: " + winner[0];
+		} else if (moves.length === 10) {
+			status = "No winner";
 		} else {
 			status = "Next player: " + (this.state.xIsNext ? "X" : "O");
 		}
@@ -180,7 +194,7 @@ function calculateWinner(squares) {
 			squares[a] === squares[b] &&
 			squares[a] === squares[c]
 		) {
-			return squares[a];
+			return [squares[a], lines[i]];
 		}
 	}
 	return null;
