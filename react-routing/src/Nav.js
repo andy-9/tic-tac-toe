@@ -5,7 +5,7 @@ function Nav() {
 	return (
 		<nav>
 			<h3>NavBar</h3>
-			<ul>
+			<ul className="nav-links">
 				<li>About</li>
 				<li>Shop</li>
 			</ul>
