@@ -4,45 +4,48 @@ import "./index.css";
 
 function Square(props) {
 	return (
-		<button className="square" onClick={props.onClick}>
+		<button
+			style={props.highlighted ? { backgroundColor: "yellow" } : {}}
+			className="square"
+			onClick={props.onClick}
+		>
 			{props.value}
 		</button>
 	);
 }
 
 class Board extends React.Component {
-	renderSquare(i) {
-		// console.log(winningSquares);
+	renderSquare(i, winningArray) {
+		let highlighted = false;
+
+		if (
+			i === winningArray[0] ||
+			i === winningArray[1] ||
+			i === winningArray[2]
+		) {
+			highlighted = true;
+		}
+
 		return (
 			<Square
 				value={this.props.squares[i]}
+				highlighted={highlighted}
 				onClick={() => this.props.onClick(i)}
 			/>
 		);
 	}
 
 	render() {
-		const winningSquares = calculateWinner(this.props.squares);
+		const winnerFunction = calculateWinner(this.props.squares);
+		const winningArray = winnerFunction ? winnerFunction.winningArray : [];
 		let rows = [...Array(3).keys()];
 		return (
-			// Wieso geht das styling nicht?
-			<div style={{ backgroundColor: "yellow", color: "red" }}>
+			<div>
 				{rows.map((row) => (
-					<div
-						key={row}
-						className="board-row"
-						style={{ backgroundColor: "yellow", color: "red" }}
-					>
+					<div key={row} className="board-row">
 						{[0, 3, 6].map((x) => (
-							<span
-								key={x}
-								style={{
-									backgroundColor: "yellow",
-									color: "red",
-								}}
-							>
-								{/* winningSquares[0] === ??? ? "yellow" : "transparent", */}
-								{this.renderSquare(row + x)}
+							<span key={x}>
+								{this.renderSquare(row + x, winningArray)}
 							</span>
 						))}
 					</div>
@@ -132,7 +135,7 @@ class Game extends React.Component {
 
 		let status;
 		if (winner) {
-			status = "Winner: " + winner[0];
+			status = "Winner: " + winner.winner;
 		} else if (moves.length === 10) {
 			status = "No winner";
 		} else {
@@ -151,13 +154,16 @@ class Game extends React.Component {
 				</div>
 				<div className="game-info">
 					<div>{status}</div>
-					{ascending ? <ol>{moves}</ol> : <ol reversed>{moves}</ol>}
+					{ascending ? (
+						<ol>{moves}</ol>
+					) : (
+						<ol reversed>{moves.reverse()}</ol>
+					)}
 				</div>
 				<div>
 					<button onClick={() => this.toggleClick()}>
 						{ascending ? "sort descending" : "sort ascending"}
 					</button>
-					{/* toggle geht nur für ziffern bisher, nicht für die liste selbst */}
 				</div>
 			</div>
 		);
@@ -194,7 +200,7 @@ function calculateWinner(squares) {
 			squares[a] === squares[b] &&
 			squares[a] === squares[c]
 		) {
-			return [squares[a], lines[i]];
+			return { winner: squares[a], winningArray: lines[i] };
 		}
 	}
 	return null;
